@@ -13,52 +13,77 @@ args = sys.argv[1:]
 #############
 # Functions #
 #############
-def parse_args():
+def parse_args(args):
+    """ Parses the arguments passed to the script. 
+    Handles the cases of incorrect arg length and invalid args. 
+    Otherwise, calls the appropriate function. """
     if len(args) == 0:
-        # send help message if no arguments are given
-        print_help()
-        sys.exit(1)
-    elif len(args) == 1:
-        print_help(args[0])
+        print_all_help()
         sys.exit(1)
     else:
-        pass
+        # parse function and its arguments
+        command = args[0]
+        args = args[1:]
+        # fetch function 
+        commands = fetch_functions()
+        command_func = commands[command]
+        # call function
+        command_func(args)
 
-def print_help(command=None):
-    """ Prints a list of all commands and their descriptions.
-    Or just a singular command dependent upon user input. """
-    commands = retrieve_commands()
-    if command is not None:
-        # print help for specific command (if valid)
-        if command in commands:
-            print(commands[command])
-        else:
-            print("Please enter a valid command.")
+def print_all_help():
+    """ Prints all commands and their descriptions. """
+    commands = fetch_commands_help()
+    print("List of valid commands:")
+    for command in commands:
+        print("\n{}:\n{}".format(command, commands[command]))
+
+def help(args=[]):
+    """ Prints the help for a command. Depends on the command passed. """
+    commands = fetch_commands_help()
+    if args:
+        for arg in args:
+            if arg == "help":
+                #TODO: print randomized funny stuff ?? audio files ? outputs slowly ?
+                print("lol")
+            elif arg in commands:
+                print("Argument: {}\n--Description:--\n {}".format(arg, commands[arg]))
+            else:
+                print("Invalid command: {}".format(arg))
     else:
-        print("List of valid commands:")
-        for command in commands:
-            print("\n")
-            print(command + ":\n " + commands[command])
+        # print all commands and their descriptions
+        print_all_help()
 
-def retrieve_commands():
-    """ Returns a dictionary of commands and their descriptions. """
+def fetch_commands_help():
+    """ Returns a dictionary of commands and their descriptions. 
+    For use in print_help(). """
     commands = {}
     # commands['command'] = 'description'
     # help
-    commands["help"] = "Takes no arguments.\nPrints a list of all commands and their discriptions."
+    commands["help"] = "!!Optional!! <arg1> <arg2> ...\nPrints a list of all commands and their discriptions.\nOr as many commands the user inputs."
     # version
     commands["version"] = "Takes no arguments.\nPrints the version of this script."
     # new
-    commands["new"] = "Takes 1 argument:\n 1. The name of the file in which to store the current session of undertale."
+    commands["new"] = "<arg1>\n1. The name of the file in which to store the current session of undertale."
     # swap
-    commands["swap"] = "Takes 2 arguments:\n1. The name of the file storing the save of undertale you want to load\n2. The name of the file in which you want to save the current session of undertale."
+    commands["swap"] = "<arg1> <arg2>\n1. The name of the file storing the save of undertale you want to load\n2. The name of the file in which you want to save the current session of undertale."
     return commands
+
+def fetch_functions():
+    """ Returns a dictionary of commands and their functions. 
+    For use in parse_args(). """
+    functions = {}
+    # functions['command'] = function
+    functions["help"] = help
+    # functions["version"] = print_version
+    # functions["new"] = new_save
+    # functions["swap"] = swap_save
+    return functions
 
 #########################
 # Execute Script (Main) #
 #########################
 def main():
-    parse_args()
+    parse_args(args)
 
 if __name__ == '__main__':
     sys.exit(main())
