@@ -1,4 +1,5 @@
 #!/usr/local/bin/env python
+
 import os
 import sys
 
@@ -8,6 +9,7 @@ import sys
 #############
 cwd = os.getcwd()
 args = sys.argv[1:]
+version = "0.1.0"
 
 
 #############
@@ -36,7 +38,11 @@ def print_all_help():
     print("List of valid commands:")
     for command in commands:
         print("\n{}:\n{}".format(command, commands[command]))
+    sys.exit(1)
 
+###########################
+# Functions in "commands" #
+###########################
 def help(args=[]):
     """ Prints the help for a command. Depends on the command passed. """
     commands = fetch_commands_help()
@@ -53,6 +59,41 @@ def help(args=[]):
         # print all commands and their descriptions
         print_all_help()
 
+def print_version(args=[]):
+    """ Prints the version of this script. """
+    if args:
+        print("You passed in too many arguments but this function still works anyways :p\n\n")
+    #TODO: funny stuff depending on num args ?
+    print("Undertale Save Swapper v{}".format(version))
+
+def new_save(args):
+    """ Creates a new save file. """
+    if len(args) == 1:
+        save_name = args[0]
+        save_path = os.path.join(cwd, save_name)
+        if os.path.exists(save_path):
+            print("File already exists: {}".format(save_path))
+            sys.exit(1)
+        else:
+            with open(save_path, "w") as f:
+                f.write("")
+            print("Created file: {}".format(save_path))
+
+def swap_save(args):
+    """ Swaps the save file of undertale. """
+    if len(args) == 2:
+        save_name = args[0]
+        save_path = os.path.join(cwd, save_name)
+        if os.path.exists(save_path):
+            with open(save_path, "w") as f:
+                f.write("")
+            print("Created file: {}".format(save_path))
+        else:
+            print("File does not exist: {}".format(save_path))
+            sys.exit(1)
+####################
+# Helper Functions #
+####################
 def fetch_commands_help():
     """ Returns a dictionary of commands and their descriptions. 
     For use in print_help(). """
@@ -74,9 +115,9 @@ def fetch_functions():
     functions = {}
     # functions['command'] = function
     functions["help"] = help
-    # functions["version"] = print_version
-    # functions["new"] = new_save
-    # functions["swap"] = swap_save
+    functions["version"] = print_version
+    functions["new"] = new_save
+    functions["swap"] = swap_save
     return functions
 
 #########################
