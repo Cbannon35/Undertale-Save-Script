@@ -9,7 +9,7 @@ import sys
 #############
 cwd = os.getcwd()
 args = sys.argv[1:]
-version = "0.2.0"
+version = "0.2.1"
 # Folder undertale stuff lives in (specifically on macOS + Steam)
 undertale_dir = os.path.expanduser("~/Library/Application Support/com.tobyfox.undertale/")
 if not os.path.isdir(undertale_dir):
@@ -32,9 +32,13 @@ def parse_args(args):
         args = args[1:]
         # fetch function 
         commands = fetch_functions()
-        command_func = commands[command]
-        # call function
-        command_func(args)
+        if command in commands.keys():
+            command_func = commands[command]
+            # call function
+            command_func(args)
+        else:
+            print("Invalid command: {}".format(command))
+            sys.exit(1)
 
 def print_all_help():
     """ Prints all commands and their descriptions. """
