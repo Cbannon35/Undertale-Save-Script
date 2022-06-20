@@ -9,8 +9,12 @@ import sys
 #############
 cwd = os.getcwd()
 args = sys.argv[1:]
-version = "0.1.0"
-
+version = "0.2.0"
+# Folder undertale stuff lives in (specifically on macOS + Steam)
+undertale_dir = os.path.expanduser("~/Library/Application Support/com.tobyfox.undertale/")
+if not os.path.isdir(undertale_dir):
+    print("Could not locate undertale directory. Please make sure you are using macOS and playing undertale on Steam.")
+    sys.exit(1)
 
 #############
 # Functions #
@@ -78,6 +82,9 @@ def new_save(args):
             with open(save_path, "w") as f:
                 f.write("")
             print("Created file: {}".format(save_path))
+    else:
+        print("Invalid number of arguments: {}".format(len(args)))
+        sys.exit(1)
 
 def swap_save(args):
     """ Swaps the save file of undertale. """
