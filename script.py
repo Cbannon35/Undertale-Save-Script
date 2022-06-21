@@ -9,7 +9,7 @@ import sys
 #############
 cwd = os.getcwd()
 args = sys.argv[1:]
-version = "0.2.1"
+version = "0.3.0"
 # Folder undertale stuff lives in (specifically on macOS + Steam)
 undertale_dir = os.path.expanduser("~/Library/Application Support/com.tobyfox.undertale/")
 if not os.path.isdir(undertale_dir):
@@ -79,13 +79,12 @@ def new_save(args):
     if len(args) == 1:
         save_name = args[0]
         save_path = os.path.join(cwd, save_name)
-        if os.path.exists(save_path):
-            print("File already exists: {}".format(save_path))
-            sys.exit(1)
-        else:
-            with open(save_path, "w") as f:
-                f.write("")
-            print("Created file: {}".format(save_path))
+        if not os.path.exists(save_path):
+            # create directory if it doesn't exist
+            os.makedirs(save_path)
+        # move all files from undertale to new save directory
+        for file in os.listdir(undertale_dir):
+                os.rename(os.path.join(undertale_dir, file), os.path.join(save_path, file))
     else:
         print("Invalid number of arguments: {}".format(len(args)))
         sys.exit(1)
