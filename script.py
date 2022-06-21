@@ -9,7 +9,7 @@ import sys
 #############
 cwd = os.getcwd()
 args = sys.argv[1:]
-version = "0.3.0"
+version = "0.4.0"
 # Folder undertale stuff lives in (specifically on macOS + Steam)
 undertale_dir = os.path.expanduser("~/Library/Application Support/com.tobyfox.undertale/")
 if not os.path.isdir(undertale_dir):
@@ -24,6 +24,7 @@ def parse_args(args):
     Handles the cases of incorrect arg length and invalid args. 
     Otherwise, calls the appropriate function. """
     if len(args) == 0:
+        #TODO: print random funny stuff ?
         print_all_help()
         sys.exit(1)
     else:
@@ -84,7 +85,9 @@ def new_save(args):
             os.makedirs(save_path)
         # move all files from undertale to new save directory
         for file in os.listdir(undertale_dir):
-                os.rename(os.path.join(undertale_dir, file), os.path.join(save_path, file))
+            if file == "config.ini":
+                continue
+            os.rename(os.path.join(undertale_dir, file), os.path.join(save_path, file))
     else:
         print("Invalid number of arguments: {}".format(len(args)))
         sys.exit(1)
@@ -92,15 +95,26 @@ def new_save(args):
 def swap_save(args):
     """ Swaps the save file of undertale. """
     if len(args) == 2:
-        save_name = args[0]
+        load_name = args[0]
+        load_path = os.path.join(cwd, load_name)
+        save_name = args[1]
         save_path = os.path.join(cwd, save_name)
-        if os.path.exists(save_path):
-            with open(save_path, "w") as f:
-                f.write("")
-            print("Created file: {}".format(save_path))
-        else:
-            print("File does not exist: {}".format(save_path))
+        if not os.path.exists(load_path):
+            print("Invalid load file: {}".format(load_name))
             sys.exit(1)
+        # move all files from undertale to new or existing save directory
+        if not os.path.exists(save_path):
+            # create directory if it doesn't exist
+            os.makedirs(save_path)
+        # move all files from undertale to new save directory
+        for file in os.listdir(undertale_dir):
+            if file == "config.ini":
+                continue
+            os.rename(os.path.join(undertale_dir, file), os.path.join(save_path, file))
+        # move all files from load_path to undertale
+        for file in os.listdir(load_path):
+            os.rename(os.path.join(load_path, file), os.path.join(undertale_dir, file))
+
 ####################
 # Helper Functions #
 ####################
