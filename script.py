@@ -9,12 +9,13 @@ import sys
 #############
 cwd = os.getcwd()
 args = sys.argv[1:]
-version = "0.4.0"
+version = "0.5.0"
 # Folder undertale stuff lives in (specifically on macOS + Steam)
 undertale_dir = os.path.expanduser("~/Library/Application Support/com.tobyfox.undertale/")
 if not os.path.isdir(undertale_dir):
     print("Could not locate undertale directory. Please make sure you are using macOS and playing undertale on Steam.")
     sys.exit(1)
+
 
 #############
 # Functions #
@@ -99,13 +100,16 @@ def swap_save(args):
         load_path = os.path.join(cwd, load_name)
         save_name = args[1]
         save_path = os.path.join(cwd, save_name)
+        # Check if you are loading a valid save file
         if not os.path.exists(load_path):
             print("Invalid load file: {}".format(load_name))
             sys.exit(1)
+
         # move all files from undertale to new or existing save directory
         if not os.path.exists(save_path):
             # create directory if it doesn't exist
             os.makedirs(save_path)
+
         # move all files from undertale to new save directory
         for file in os.listdir(undertale_dir):
             if file == "config.ini":
@@ -114,6 +118,18 @@ def swap_save(args):
         # move all files from load_path to undertale
         for file in os.listdir(load_path):
             os.rename(os.path.join(load_path, file), os.path.join(undertale_dir, file))
+
+def play(args):
+    """ Starts undertale. """
+    if len(args) == 0:
+        undertale = os.path.expanduser("/Applications/Undertale.app")
+        if not os.path.exists(undertale):
+            print("Could not find undertale. Please make Undertale is in your applications folder.")
+            sys.exit(1) 
+        os.system("open {}".format(undertale))
+    else:
+        print("Invalid number of arguments: {}".format(len(args)))
+        sys.exit(1)
 
 ####################
 # Helper Functions #
@@ -142,6 +158,7 @@ def fetch_functions():
     functions["version"] = print_version
     functions["new"] = new_save
     functions["swap"] = swap_save
+    functions["play"] = play
     return functions
 
 #########################
