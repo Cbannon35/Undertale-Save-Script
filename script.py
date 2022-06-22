@@ -9,7 +9,7 @@ import sys
 #############
 cwd = os.getcwd()
 args = sys.argv[1:]
-version = "0.5.0"
+version = "0.5.1"
 # Folder undertale stuff lives in (specifically on macOS + Steam)
 undertale_dir = os.path.expanduser("~/Library/Application Support/com.tobyfox.undertale/")
 if not os.path.isdir(undertale_dir):
